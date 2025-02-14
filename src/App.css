@@ -65,7 +65,23 @@
 .keypad {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
   gap: 10px;
+}
+
+.zero {
+  grid-column: span 2;
+}
+
+.equals {
+  background-color: #007bff;
+  color: white;
+  grid-row: span 2;
+}
+
+.clear {
+  background-color: #dc3545;
+  color: white;
 }
 
 button {
@@ -79,6 +95,12 @@ button {
   color: #666;
 }
 
+button.operator {
+  background-color: #f8f9fa;
+  color: #666;
+  font-weight: bold;
+}
+
 button:not([onClick*="handleOperator"]):not([onClick*="clear"]):not([onClick*="performCalculation"]) {
   color: #333;
   font-weight: 500;
@@ -86,6 +108,10 @@ button:not([onClick*="handleOperator"]):not([onClick*="clear"]):not([onClick*="p
 
 button:hover {
   background-color: #eee;
+}
+
+button.clear:hover {
+  background-color: #c82333;
 }
 
 button:active {
