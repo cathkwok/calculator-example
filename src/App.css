@@ -117,3 +117,41 @@ button.clear:hover {
 button:active {
   background-color: #ddd;
 }
+
+.calculator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.rainbow-title {
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+.rainbow-title span {
+  display: inline-block;
+  animation: rainbow-colors 3s linear infinite;
+}
+
+.rainbow-title span:nth-child(1) { animation-delay: 0.0s; }
+.rainbow-title span:nth-child(2) { animation-delay: 0.1s; }
+.rainbow-title span:nth-child(3) { animation-delay: 0.2s; }
+.rainbow-title span:nth-child(4) { animation-delay: 0.3s; }
+.rainbow-title span:nth-child(5) { animation-delay: 0.4s; }
+.rainbow-title span:nth-child(6) { animation-delay: 0.5s; }
+.rainbow-title span:nth-child(7) { animation-delay: 0.6s; }
+.rainbow-title span:nth-child(8) { animation-delay: 0.7s; }
+.rainbow-title span:nth-child(9) { animation-delay: 0.8s; }
+.rainbow-title span:nth-child(10) { animation-delay: 0.9s; }
+
+@keyframes rainbow-colors {
+  0% { color: #ff0000; }
+  17% { color: #ff8000; }
+  33% { color: #ffff00; }
+  50% { color: #00ff00; }
+  67% { color: #0000ff; }
+  83% { color: #8000ff; }
+  100% { color: #ff0000; }
+}

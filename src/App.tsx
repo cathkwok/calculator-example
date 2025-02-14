@@ -76,30 +76,44 @@ function App() {
   }
 
   return (
-    <div className="calculator">
-      <div className="display">{display}</div>
-      <div className="keypad">
-        <button onClick={() => clear()} className="clear">C</button>
-        <button onClick={() => handleOperator('/')} className="operator">/</button>
-        <button onClick={() => handleOperator('*')} className="operator">×</button>
-        <button onClick={() => handleOperator('-')} className="operator">−</button>
+    <div className="calculator-container">
+      <h1 className="rainbow-title">
+        <span>C</span>
+        <span>a</span>
+        <span>l</span>
+        <span>c</span>
+        <span>u</span>
+        <span>l</span>
+        <span>a</span>
+        <span>t</span>
+        <span>o</span>
+        <span>r</span>
+      </h1>
+      <div className="calculator">
+        <div className="display">{display}</div>
+        <div className="keypad">
+          <button onClick={() => clear()} className="clear">C</button>
+          <button onClick={() => handleOperator('/')} className="operator">/</button>
+          <button onClick={() => handleOperator('*')} className="operator">×</button>
+          <button onClick={() => handleOperator('-')} className="operator">−</button>
 
-        <button onClick={() => inputDigit('7')}>7</button>
-        <button onClick={() => inputDigit('8')}>8</button>
-        <button onClick={() => inputDigit('9')}>9</button>
-        <button onClick={() => handleOperator('+')} className="operator plus">+</button>
+          <button onClick={() => inputDigit('7')}>7</button>
+          <button onClick={() => inputDigit('8')}>8</button>
+          <button onClick={() => inputDigit('9')}>9</button>
+          <button onClick={() => handleOperator('+')} className="operator plus">+</button>
 
-        <button onClick={() => inputDigit('4')}>4</button>
-        <button onClick={() => inputDigit('5')}>5</button>
-        <button onClick={() => inputDigit('6')}>6</button>
-        <button onClick={() => performCalculation()} className="equals">=</button>
+          <button onClick={() => inputDigit('4')}>4</button>
+          <button onClick={() => inputDigit('5')}>5</button>
+          <button onClick={() => inputDigit('6')}>6</button>
+          <button onClick={() => performCalculation()} className="equals">=</button>
 
-        <button onClick={() => inputDigit('1')}>1</button>
-        <button onClick={() => inputDigit('2')}>2</button>
-        <button onClick={() => inputDigit('3')}>3</button>
-        <button onClick={() => inputDigit('0')} className="zero">0</button>
+          <button onClick={() => inputDigit('1')}>1</button>
+          <button onClick={() => inputDigit('2')}>2</button>
+          <button onClick={() => inputDigit('3')}>3</button>
+          <button onClick={() => inputDigit('0')} className="zero">0</button>
 
-        <button onClick={() => inputDecimal()}>.</button>
+          <button onClick={() => inputDecimal()}>.</button>
+        </div>
       </div>
     </div>
   )
