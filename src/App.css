@@ -155,3 +155,33 @@ button:active {
   83% { color: #8000ff; }
   100% { color: #ff0000; }
 }
+
+.history {
+  margin-top: 20px;
+  width: 300px;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.history h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.history ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  color: #666;
+}
+
+.history li:last-child {
+  border-bottom: none;
+}

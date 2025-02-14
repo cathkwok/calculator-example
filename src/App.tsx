@@ -1,11 +1,72 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { API, graphqlOperation } from 'aws-amplify'
 import './App.css'
+
+// GraphQL operations
+const createCalculation = /* GraphQL */ `
+  mutation CreateCalculation(
+    $input: CreateCalculationInput!
+  ) {
+    createCalculation(input: $input) {
+      id
+      expression
+      result
+      timestamp
+    }
+  }
+`
+
+const listCalculations = /* GraphQL */ `
+  query ListCalculations(
+    $limit: Int
+  ) {
+    getCalculationHistory(limit: $limit) {
+      id
+      expression
+      result
+      timestamp
+    }
+  }
+`
 
 function App() {
   const [display, setDisplay] = useState('0')
   const [firstOperand, setFirstOperand] = useState<number | null>(null)
   const [operator, setOperator] = useState<string | null>(null)
   const [waitingForSecondOperand, setWaitingForSecondOperand] = useState(false)
+  const [history, setHistory] = useState([])
+
+  useEffect(() => {
+    fetchHistory()
+  }, [])
+
+  const fetchHistory = async () => {
+    try {
+      const historyData = await API.graphql(
+        graphqlOperation(listCalculations, { limit: 10 })
+      )
+      setHistory(historyData.data.getCalculationHistory)
+    } catch (err) {
+      console.error('Error fetching history:', err)
+    }
+  }
+
+  const saveCalculation = async (expression: string, result: number) => {
+    try {
+      await API.graphql(
+        graphqlOperation(createCalculation, {
+          input: {
+            expression,
+            result,
+            timestamp: new Date().toISOString(),
+          },
+        })
+      )
+      fetchHistory()
+    } catch (err) {
+      console.error('Error saving calculation:', err)
+    }
+  }
 
   const inputDigit = (digit: string) => {
     if (waitingForSecondOperand) {
@@ -69,10 +130,15 @@ function App() {
     
     const inputValue = parseFloat(display)
     const result = calculate(firstOperand, inputValue, operator)
+    const expression = `${firstOperand} ${operator} ${inputValue}`
+    
     setDisplay(String(result))
     setFirstOperand(null)
     setOperator(null)
     setWaitingForSecondOperand(false)
+    
+    // Save calculation to history
+    saveCalculation(expression, result)
   }
 
   return (
@@ -114,6 +180,16 @@ function App() {
 
           <button onClick={() => inputDecimal()}>.</button>
         </div>
+      </div>
+      <div className="history">
+        <h2>History</h2>
+        <ul>
+          {history.map((calc: any) => (
+            <li key={calc.id}>
+              {calc.expression} = {calc.result}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )

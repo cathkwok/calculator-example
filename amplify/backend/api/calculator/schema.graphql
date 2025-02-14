@@ -1,0 +1,11 @@
+type Calculation @model @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  expression: String!
+  result: Float!
+  timestamp: AWSDateTime!
+  owner: String
+}
+
+type Query {
+  getCalculationHistory(limit: Int): [Calculation]
+} 
