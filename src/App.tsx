@@ -7,33 +7,6 @@ import '@aws-amplify/ui-react/styles.css'
 
 const client = generateClient<Schema>()
 
-// GraphQL operations
-const createCalculation = /* GraphQL */ `
-  mutation CreateCalculation(
-    $input: CreateCalculationInput!
-  ) {
-    createCalculation(input: $input) {
-      id
-      expression
-      result
-      timestamp
-    }
-  }
-`
-
-const listCalculations = /* GraphQL */ `
-  query ListCalculations(
-    $limit: Int
-  ) {
-    getCalculationHistory(limit: $limit) {
-      id
-      expression
-      result
-      timestamp
-    }
-  }
-`
-
 export default function App() {
   const [display, setDisplay] = useState('0')
   const [firstOperand, setFirstOperand] = useState<number | null>(null)

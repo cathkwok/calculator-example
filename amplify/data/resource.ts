@@ -14,7 +14,10 @@ const schema = a.schema({
     result: a.float(),
     timestamp: a.string(),
     owner: a.string(),
-  }).authorization(allow => [allow.owner()]),
+  }).authorization(allow => [
+    // This allows authenticated users to create and read their own records
+    allow.owner().to(['create', 'read', 'update', 'delete']),
+  ]),
 });
 
 export const data = defineData({
