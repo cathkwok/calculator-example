@@ -15,8 +15,7 @@ const schema = a.schema({
     timestamp: a.string(),
     owner: a.string(),
   }).authorization(allow => [
-    // This allows authenticated users to create and read their own records
-    allow.owner().to(['create', 'read', 'update', 'delete']),
+    allow.owner().to(['create', 'read', 'update', 'delete'])
   ]),
 });
 

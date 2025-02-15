@@ -16,8 +16,4 @@ export const auth = defineAuth({
       mutable: true,
     },
   },
-  // Configure email verification message
-  emailSettings: {
-    emailSubject: 'Calculator App - Verify your email',
-  },
 });
