@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react'
-import { API, graphqlOperation } from 'aws-amplify'
+import { generateClient } from 'aws-amplify/api'
+import { type Schema } from '../amplify/data/resource'
 import './App.css'
+import { Authenticator } from '@aws-amplify/ui-react'
+import '@aws-amplify/ui-react/styles.css'
+
+const client = generateClient<Schema>()
 
 // GraphQL operations
 const createCalculation = /* GraphQL */ `
@@ -29,12 +34,12 @@ const listCalculations = /* GraphQL */ `
   }
 `
 
-function App() {
+export default function App() {
   const [display, setDisplay] = useState('0')
   const [firstOperand, setFirstOperand] = useState<number | null>(null)
   const [operator, setOperator] = useState<string | null>(null)
   const [waitingForSecondOperand, setWaitingForSecondOperand] = useState(false)
-  const [history, setHistory] = useState([])
+  const [history, setHistory] = useState<Schema['Calculation'][]>([])
 
   useEffect(() => {
     fetchHistory()
@@ -42,10 +47,10 @@ function App() {
 
   const fetchHistory = async () => {
     try {
-      const historyData = await API.graphql(
-        graphqlOperation(listCalculations, { limit: 10 })
-      )
-      setHistory(historyData.data.getCalculationHistory)
+      const history = await client.models.Calculation.list({
+        limit: 10,
+      })
+      setHistory(history.data)
     } catch (err) {
       console.error('Error fetching history:', err)
     }
@@ -53,15 +58,11 @@ function App() {
 
   const saveCalculation = async (expression: string, result: number) => {
     try {
-      await API.graphql(
-        graphqlOperation(createCalculation, {
-          input: {
-            expression,
-            result,
-            timestamp: new Date().toISOString(),
-          },
-        })
-      )
+      await client.models.Calculation.create({
+        expression,
+        result,
+        timestamp: new Date().toISOString(),
+      })
       fetchHistory()
     } catch (err) {
       console.error('Error saving calculation:', err)
@@ -142,57 +143,60 @@ function App() {
   }
 
   return (
-    <div className="calculator-container">
-      <h1 className="rainbow-title">
-        <span>C</span>
-        <span>a</span>
-        <span>l</span>
-        <span>c</span>
-        <span>u</span>
-        <span>l</span>
-        <span>a</span>
-        <span>t</span>
-        <span>o</span>
-        <span>r</span>
-      </h1>
-      <div className="calculator">
-        <div className="display">{display}</div>
-        <div className="keypad">
-          <button onClick={() => clear()} className="clear">C</button>
-          <button onClick={() => handleOperator('/')} className="operator">/</button>
-          <button onClick={() => handleOperator('*')} className="operator">×</button>
-          <button onClick={() => handleOperator('-')} className="operator">−</button>
+    <Authenticator>
+      {({ signOut }) => (
+        <div className="calculator-container">
+          <h1 className="rainbow-title">
+            <span>C</span>
+            <span>a</span>
+            <span>l</span>
+            <span>c</span>
+            <span>u</span>
+            <span>l</span>
+            <span>a</span>
+            <span>t</span>
+            <span>o</span>
+            <span>r</span>
+          </h1>
+          <div className="calculator">
+            <div className="display">{display}</div>
+            <div className="keypad">
+              <button onClick={() => clear()} className="clear">C</button>
+              <button onClick={() => handleOperator('/')} className="operator">/</button>
+              <button onClick={() => handleOperator('*')} className="operator">×</button>
+              <button onClick={() => handleOperator('-')} className="operator">−</button>
 
-          <button onClick={() => inputDigit('7')}>7</button>
-          <button onClick={() => inputDigit('8')}>8</button>
-          <button onClick={() => inputDigit('9')}>9</button>
-          <button onClick={() => handleOperator('+')} className="operator plus">+</button>
+              <button onClick={() => inputDigit('7')}>7</button>
+              <button onClick={() => inputDigit('8')}>8</button>
+              <button onClick={() => inputDigit('9')}>9</button>
+              <button onClick={() => handleOperator('+')} className="operator plus">+</button>
 
-          <button onClick={() => inputDigit('4')}>4</button>
-          <button onClick={() => inputDigit('5')}>5</button>
-          <button onClick={() => inputDigit('6')}>6</button>
-          <button onClick={() => performCalculation()} className="equals">=</button>
+              <button onClick={() => inputDigit('4')}>4</button>
+              <button onClick={() => inputDigit('5')}>5</button>
+              <button onClick={() => inputDigit('6')}>6</button>
+              <button onClick={() => performCalculation()} className="equals">=</button>
 
-          <button onClick={() => inputDigit('1')}>1</button>
-          <button onClick={() => inputDigit('2')}>2</button>
-          <button onClick={() => inputDigit('3')}>3</button>
-          <button onClick={() => inputDigit('0')} className="zero">0</button>
+              <button onClick={() => inputDigit('1')}>1</button>
+              <button onClick={() => inputDigit('2')}>2</button>
+              <button onClick={() => inputDigit('3')}>3</button>
+              <button onClick={() => inputDigit('0')} className="zero">0</button>
 
-          <button onClick={() => inputDecimal()}>.</button>
+              <button onClick={() => inputDecimal()}>.</button>
+            </div>
+          </div>
+          <div className="history">
+            <h2>History</h2>
+            <ul>
+              {history.map((calc: any) => (
+                <li key={calc.id}>
+                  {calc.expression} = {calc.result}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <button onClick={signOut}>Sign Out</button>
         </div>
-      </div>
-      <div className="history">
-        <h2>History</h2>
-        <ul>
-          {history.map((calc: any) => (
-            <li key={calc.id}>
-              {calc.expression} = {calc.result}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+      )}
+    </Authenticator>
   )
 }
-
-export default App
